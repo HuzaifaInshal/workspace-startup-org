@@ -49,8 +49,7 @@ class DesktopColumn(QFrame):
     def _init_ui(self) -> None:
         self.setObjectName("DesktopColumn")
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.setMinimumWidth(240)
-        self.setMaximumWidth(500)
+        self.setMinimumWidth(260)
 
         # Main layout of the column
         main_layout = QVBoxLayout(self)
@@ -138,6 +137,7 @@ class DesktopColumn(QFrame):
         scroll.setStyleSheet("background: transparent;")
 
         cards_container = QWidget()
+        cards_container.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
         cards_layout = QVBoxLayout(cards_container)
         cards_layout.setContentsMargins(0, 0, 0, 0)
         cards_layout.setSpacing(10)

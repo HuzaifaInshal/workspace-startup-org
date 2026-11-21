@@ -4,6 +4,25 @@ A native desktop application and automation engine designed specifically for **C
 
 ---
 
+## Screenshots
+
+### Workspace Board View
+Organize applications across your KDE Plasma virtual desktops with full-height responsive columns, live status badges, custom toggle switches, and real-time search filtering.
+
+![Workspace Board View](assets/screenshots/workspace-board.png)
+
+### Tabular List View
+A clean, compact table view with sorting, instant search filter, status toggles, and direct launch/edit controls.
+
+![Tabular List View](assets/screenshots/table-view.png)
+
+### Application Editor & Window Inspector
+Search installed system applications or detect window matching rules directly from active open windows in KWin.
+
+![Application Editor & Inspector](assets/screenshots/app-dialog.png)
+
+---
+
 ## Features
 
 - 🖥️ **Workspace Board View**: View your startup applications arranged under dedicated columns for each **Virtual Desktop** (Desktop 1, Desktop 2, Desktop 3, etc.).

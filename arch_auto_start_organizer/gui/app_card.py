@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QComboBox,
     QWidget,
+    QSizePolicy,
 )
 
 from arch_auto_start_organizer.core.config import AppItem
@@ -41,6 +42,7 @@ class AppCard(QFrame):
     def _init_ui(self) -> None:
         self.setObjectName("AppCard")
         self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
 
         card_layout = QVBoxLayout(self)
         card_layout.setContentsMargins(12, 12, 12, 12)
@@ -104,10 +106,11 @@ class AppCard(QFrame):
         chips_layout = QVBoxLayout()
         chips_layout.setSpacing(4)
 
-        # Executable chip
-        cmd_text = self.app.command if self.app.command else "(no command specified)"
-        cmd_chip = QLabel(f"▶ <code>{cmd_text}</code>")
-        cmd_chip.setToolTip(f"Launch command: {self.app.command}")
+        # Executable chip with smart elision for long commands
+        raw_cmd = self.app.command if self.app.command else "(no command specified)"
+        display_cmd = raw_cmd if len(raw_cmd) <= 38 else raw_cmd[:35] + "..."
+        cmd_chip = QLabel(f"▶ <code>{display_cmd}</code>")
+        cmd_chip.setToolTip(f"Launch Command:\n{raw_cmd}")
         cmd_chip.setStyleSheet(
             """
             QLabel {
@@ -127,7 +130,10 @@ class AppCard(QFrame):
         tags_row.setSpacing(6)
 
         if self.app.match_rule:
-            rule_chip = QLabel(f"🎯 Match: {self.app.match_rule}")
+            raw_rule = self.app.match_rule
+            display_rule = raw_rule if len(raw_rule) <= 22 else raw_rule[:19] + "..."
+            rule_chip = QLabel(f"🎯 Match: {display_rule}")
+            rule_chip.setToolTip(f"KWin Window Match Rule:\n{raw_rule}")
             rule_chip.setStyleSheet(
                 """
                 QLabel {

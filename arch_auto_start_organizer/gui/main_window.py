@@ -423,12 +423,12 @@ class MainWindow(QMainWindow):
             col.app_desktop_changed.connect(self._on_change_app_desktop)
             col.app_test_launch_requested.connect(self._on_test_launch_app)
 
-            self.board_layout.addWidget(col)
+            self.board_layout.addWidget(col, stretch=1)
 
         # "+ Add Virtual Desktop" Placeholder Column
         add_desktop_col = AddDesktopColumn()
         add_desktop_col.create_requested.connect(self._on_create_virtual_desktop)
-        self.board_layout.addWidget(add_desktop_col)
+        self.board_layout.addWidget(add_desktop_col, stretch=0)
 
     def _render_table_view(self) -> None:
         """Populates the tabular list view."""
