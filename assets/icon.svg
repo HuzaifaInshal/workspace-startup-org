@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2335"/>
+      <stop offset="100%" stop-color="#13151f"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3daee9"/>
+      <stop offset="100%" stop-color="#007acc"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2ac3de"/>
+      <stop offset="100%" stop-color="#7aa2f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Container -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bgGrad)" stroke="#3daee9" stroke-width="2.5" filter="url(#shadow)"/>
+
+  <!-- Desktop 1 Grid Box -->
+  <rect x="22" y="24" width="38" height="34" rx="8" fill="#24283b" stroke="#3daee9" stroke-width="1.8"/>
+  <circle cx="30" cy="32" r="2.5" fill="#f7768e"/>
+  <circle cx="37" cy="32" r="2.5" fill="#e0af68"/>
+  <circle cx="44" cy="32" r="2.5" fill="#9ece6a"/>
+  <!-- App card inside D1 -->
+  <rect x="28" y="39" width="26" height="13" rx="4" fill="url(#accentGrad)"/>
+
+  <!-- Desktop 2 Grid Box -->
+  <rect x="68" y="24" width="38" height="34" rx="8" fill="#24283b" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <rect x="74" y="39" width="26" height="13" rx="4" fill="url(#cardGrad)"/>
+
+  <!-- Desktop 3 Grid Box -->
+  <rect x="22" y="68" width="38" height="34" rx="8" fill="#24283b" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <rect x="28" y="83" width="26" height="13" rx="4" fill="#bb9af7"/>
+
+  <!-- Desktop 4 Grid Box -->
+  <rect x="68" y="68" width="38" height="34" rx="8" fill="#24283b" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <rect x="74" y="83" width="26" height="13" rx="4" fill="#9ece6a"/>
+
+  <!-- Center Startup Launch Rocket Indicator -->
+  <circle cx="64" cy="63" r="14" fill="#1a1b26" stroke="#3daee9" stroke-width="2.5"/>
+  <path d="M64 54 L69 64 L65 63 L65 71 L63 71 L63 63 L59 64 Z" fill="#3daee9"/>
+</svg>

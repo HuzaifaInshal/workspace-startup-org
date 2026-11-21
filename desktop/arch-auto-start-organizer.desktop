@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Workspace Startup Organizer
+GenericName=Startup Applications Manager
+Comment=Manage and route auto-startup applications across KDE Plasma virtual desktops
+Exec=/home/huzaifai/.local/bin/arch-auto-start-organizer
+Icon=/home/huzaifai/huzaifa/projects/arch-auto-start-organizer/assets/icon.svg
+Terminal=false
+StartupNotify=true
+Categories=Utility;Settings;System;
+Keywords=startup;autostart;workspace;virtual desktop;kwin;cachyos;kde;

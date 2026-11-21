@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arch-auto-start-organizer"
+version = "1.0.0"
+description = "Desktop app to manage and route auto-startup applications across KDE Plasma virtual desktops in CachyOS / Arch Linux"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Huzaifa I."}
+]
+dependencies = [
+    "PyQt6>=6.5.0"
+]
+
+[project.scripts]
+arch-auto-start-organizer = "arch_auto_start_organizer.main:main"
+arch-auto-start-organizer-runner = "arch_auto_start_organizer.runner:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["arch_auto_start_organizer*"]
