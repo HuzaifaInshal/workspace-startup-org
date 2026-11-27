@@ -83,14 +83,32 @@ class AppScanner:
         wm_class = entry.get("StartupWMClass", "").strip()
         categories = entry.get("Categories", "").strip()
 
-        # Deducing smart process check pattern
-        # Usually first token of exec or wm_class
+        # Deducing smart process check and window match patterns
         cmd_binary = os.path.basename(exec_cmd.split()[0]) if exec_cmd else ""
-        smart_check = wm_class.lower() if wm_class else cmd_binary.lower()
-
-        # Smart window match rule: StartupWMClass or binary name or desktop file base
         desktop_base = os.path.splitext(os.path.basename(path))[0].lower()
-        smart_match = wm_class.lower() if wm_class else (smart_check or desktop_base)
+
+        # Special handling for Chrome/Chromium PWAs:
+        # Desktop files often specify StartupWMClass=crx_<app_id>, but under Wayland,
+        # KWin exposes resourceClass as chrome-<app_id>-Default or uses the app ID
+        if wm_class.startswith("crx_"):
+            pwa_id = wm_class[4:].lower()
+            smart_match = pwa_id
+            smart_check = pwa_id
+        elif "chrome" in desktop_base and "--app-id=" in exec_cmd:
+            # Extract app-id from Exec line if available
+            app_id_match = re.search(r"--app-id=([a-zA-Z0-9]+)", exec_cmd)
+            if app_id_match:
+                smart_match = app_id_match.group(1).lower()
+                smart_check = smart_match
+            else:
+                smart_match = desktop_base
+                smart_check = desktop_base
+        elif "google-chrome" in desktop_base or cmd_binary == "google-chrome-stable":
+            smart_match = "google-chrome"
+            smart_check = "chrome"
+        else:
+            smart_check = wm_class.lower() if wm_class else cmd_binary.lower()
+            smart_match = wm_class.lower() if wm_class else (smart_check or desktop_base)
 
         return {
             "id": os.path.basename(path),

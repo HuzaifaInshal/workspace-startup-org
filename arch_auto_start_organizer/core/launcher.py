@@ -37,12 +37,44 @@ class AppLauncher:
         except Exception:
             return False
 
+    def is_window_open(self, match_rule: str) -> bool:
+        """Checks if a normal window matching match_rule is already open in KWin."""
+        if not match_rule or not match_rule.strip():
+            return False
+        try:
+            from arch_auto_start_organizer.core.kwin import KWinManager
+
+            kw = KWinManager()
+            rule_clean = match_rule.strip().lower()
+            for w in kw.inspect_open_windows():
+                ident = (
+                    (w.get("resourceClass", "") or "")
+                    + " "
+                    + (w.get("desktopFileName", "") or "")
+                    + " "
+                    + (w.get("caption", "") or "")
+                ).lower()
+                if rule_clean in ident:
+                    return True
+        except Exception:
+            pass
+        return False
+
     def launch(self, app: AppItem) -> bool:
         """Launches an application if it is enabled and not already running."""
         if not app.enabled:
             self.log_callback("info", f"'{app.name}' is disabled; skipping.")
             return False
 
+        # 1. Window presence check (prevents opening duplicate PWAs / single-instance apps)
+        if app.match_rule and self.is_window_open(app.match_rule):
+            self.log_callback(
+                "warn",
+                f"'{app.name}' window is already open (matched '{app.match_rule}'). Skipping launch.",
+            )
+            return False
+
+        # 2. Process presence check (pgrep pattern)
         if app.check_proc and self.is_running(app.check_proc):
             self.log_callback(
                 "warn",

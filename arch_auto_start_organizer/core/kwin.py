@@ -159,14 +159,20 @@ class KWinManager:
 
     def generate_router_script(self, app_rules: List[Dict[str, Any]]) -> str:
         """Generates ECMAScript for KWin router to intercept and assign windows."""
-        # Convert rules to JS objects: { match: string, desktop: 0-indexed int }
+        # Sort rules so most specific patterns (longer match strings, like PWA IDs)
+        # are ALWAYS checked before shorter generic rules (like "chrome")
+        sorted_rules = sorted(
+            [r for r in app_rules if r.get("match_rule", "").strip()],
+            key=lambda r: len(r.get("match_rule", "").strip()),
+            reverse=True,
+        )
+
         rules_js = []
-        for r in app_rules:
+        for r in sorted_rules:
             match_str = r.get("match_rule", "").strip().lower()
             desktop_idx = max(0, int(r.get("desktop", 1)) - 1)
-            if match_str:
-                escaped_match = match_str.replace("\\", "\\\\").replace('"', '\\"')
-                rules_js.append(f'    {{ match: "{escaped_match}", desktop: {desktop_idx} }}')
+            escaped_match = match_str.replace("\\", "\\\\").replace('"', '\\"')
+            rules_js.append(f'    {{ match: "{escaped_match}", desktop: {desktop_idx} }}')
 
         rules_body = ",\n".join(rules_js)
 
@@ -177,10 +183,22 @@ const rules = [
 
 function assignDesktop(w) {{
     if (!w || !w.normalWindow) return;
-    const identifier = ((w.resourceClass || "") + " " + (w.desktopFileName || "")).toLowerCase();
+    const resClass = (w.resourceClass || "").toLowerCase();
+    const desktopFile = (w.desktopFileName || "").toLowerCase();
+    const caption = (w.caption || "").toLowerCase();
+    const identifier = resClass + " " + desktopFile + " " + caption;
+
     for (let i = 0; i < rules.length; i++) {{
         const rule = rules[i];
-        if (identifier.indexOf(rule.match) !== -1) {{
+        const m = rule.match.toLowerCase();
+
+        // Guard: Prevent broad "chrome" / "google-chrome" rules from hijacking Chrome PWAs / Web Apps
+        // Chrome PWAs on Wayland have resourceClass starting with "chrome-" and contain an app ID
+        if ((m === "chrome" || m === "google-chrome") && resClass.startsWith("chrome-") && resClass.length > 15) {{
+            continue;
+        }}
+
+        if (identifier.indexOf(m) !== -1) {{
             if (workspace.desktops.length > rule.desktop) {{
                 w.desktops = [workspace.desktops[rule.desktop]];
                 console.log("[KWin AutoPlace] Routed " + (w.resourceClass || w.caption) + " to desktop index " + rule.desktop);

@@ -80,8 +80,8 @@ def get_default_apps() -> List[AppItem]:
             enabled=True,
             desktop=2,
             command="google-chrome-stable",
-            check_proc="chrome",
-            match_rule="chrome",
+            check_proc="google-chrome",
+            match_rule="google-chrome",
             icon="google-chrome",
             desktop_file="google-chrome.desktop",
             description="Google Chrome web browser",
@@ -152,6 +152,19 @@ class ConfigManager:
 
         apps: List[AppItem] = []
         for a in data.get("apps", []):
+            match_rule = a.get("match_rule", "")
+            # Migration: If match_rule starts with "crx_", strip "crx_" to match Wayland PWA resourceClass
+            if match_rule.startswith("crx_"):
+                match_rule = match_rule[4:]
+            # Migration: Ensure Google Chrome matches "google-chrome" rather than generic "chrome"
+            # to avoid false-matching Chrome PWAs/WebApps
+            if a.get("id") == "google-chrome" and match_rule == "chrome":
+                match_rule = "google-chrome"
+
+            check_proc = a.get("check_proc", "")
+            if check_proc.startswith("crx_"):
+                check_proc = check_proc[4:]
+
             apps.append(
                 AppItem(
                     id=a.get("id", str(uuid.uuid4())),
@@ -159,8 +172,8 @@ class ConfigManager:
                     enabled=bool(a.get("enabled", True)),
                     desktop=int(a.get("desktop", 1)),
                     command=a.get("command", ""),
-                    check_proc=a.get("check_proc", ""),
-                    match_rule=a.get("match_rule", ""),
+                    check_proc=check_proc,
+                    match_rule=match_rule,
                     icon=a.get("icon", "application-x-executable"),
                     delay=float(a.get("delay", 0.0)),
                     desktop_file=a.get("desktop_file", ""),
